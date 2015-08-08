@@ -1,5 +1,5 @@
 defmodule Gitex.Command.Main do
-  import Logger
+  #import Logger
 
   @init "init"
   @add "add"
@@ -15,9 +15,10 @@ defmodule Gitex.Command.Main do
   iex> Gitex.Command.Main.init(true)
   ["init", "--bare"]
   """
-  def init(bare \\ false)
+  @spec init(boolean) :: []
+  def init, do: [@init]
   def init(false), do: [@init]
-  def init(true), do: [@init, "--bare"]
+  def init(_), do: [@init, "--bare"]
 
   @doc """
   add command
@@ -28,8 +29,8 @@ defmodule Gitex.Command.Main do
   iex> Gitex.Command.Main.add("test")
   ["add", "--all", "test"]
   """
-  def add(what \\ ".")
-  def add(what), do: [@add, "--all", what]
+  @spec add(binary) :: []
+  def add(what \\ "."), do: [@add, "--all", what]
 
   @doc """
   unstage command
@@ -37,6 +38,7 @@ defmodule Gitex.Command.Main do
   iex> Gitex.Command.Main.unstage("test")
   ["reset", "HEAD", "test"]
   """
+  @spec unstage(binary) :: []
   def unstage(what), do: [@reset, "HEAD", what]
 
   @doc """
@@ -57,17 +59,23 @@ defmodule Gitex.Command.Main do
   iex> Gitex.Command.Main.commit("test message", false, nil, true)
   ["commit", "--allow-empty", "-m", "test message"]
   """
-  def commit(message, stage_all \\ true, author \\ nil, allow_empty \\ false)
-  def commit("", _, _, _) do
+  @spec commit(binary) :: []
+  @spec commit(binary, boolean) :: []
+  @spec commit(binary, boolean, %Gitex.Author{}) :: []
+  @spec commit(binary, boolean, %Gitex.Author{}, boolean) :: []
+  def commit("") do
     raise ArgumentError, message: "commit message cannot be empty"
   end
-  def commit(nil, _, _, _) do
+  def commit(nil) do
      raise ArgumentError, message: "commit message cannot be empty"
    end
-   def commit(message, stage_all, author, allow_empty) do
+   def commit(message, stage_all \\ true, author \\ nil, allow_empty \\ false) do
      res = [@commit]
      if stage_all do
        res = res ++ ["-a"]
+     end
+     unless is_nil(author) do
+       res = res ++ ["--author", author.name]
      end
      if allow_empty do
        res = res ++ ["--allow-empty"]
