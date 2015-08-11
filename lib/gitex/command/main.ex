@@ -5,6 +5,7 @@ defmodule Gitex.Command.Main do
   @add "add"
   @reset "reset"
   @commit "commit"
+  @status "status"
 
   @doc """
   init command
@@ -79,5 +80,15 @@ defmodule Gitex.Command.Main do
     end
     res = res ++ ["-m", message]
     res
+  end
+
+  @doc """
+  status command
+
+      iex> Gitex.Command.Main.status
+      ["-c", "color.status=false", "status", "--porcelain"]
+  """
+  def status do
+    ["-c", "color.status=false", @status, "--porcelain"]
   end
 end

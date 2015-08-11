@@ -6,15 +6,15 @@ defmodule Gitex.Binary do
   @doc """
   creates a respository
 
-      iex> Gitex.Binary.create_from_binary
+      iex> Gitex.Binary.new
       %Gitex.Binary{path: "/usr/bin/git"}
 
-      iex> Gitex.Binary.create_from_binary("/bin/test")
+      iex> Gitex.Binary.new("/bin/test")
       %Gitex.Binary{path: "/bin/test"}
   """
-  def create_from_binary(binary_path \\ nil)
-  def create_from_binary(nil), do: %Gitex.Binary{path: guess_binary}
-  def create_from_binary(binary_path), do: %Gitex.Binary{path: binary_path}
+  def new(binary_path \\ nil)
+  def new(nil), do: %Gitex.Binary{path: guess_binary}
+  def new(binary_path), do: %Gitex.Binary{path: binary_path}
 
   defp guess_binary do
     execute("which", ["git"])
